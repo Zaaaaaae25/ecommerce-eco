@@ -70,7 +70,11 @@
 
             <section>
                 <div style="border-radius:10px;overflow:hidden;border:1px solid #E5E7EB;background:#fff;height:320px;display:flex;align-items:center;justify-content:center;">
-                    <img src="https://images.unsplash.com/photo-1542444459-db3d6f1e6e9f?q=80&w=1200&auto=format&fit=crop" alt="hero product mockup" style="width:100%;height:100%;object-fit:cover;object-position:center"/>
+                    @if(!empty($products) && isset($products[0]['image']))
+                        <img src="{{ $products[0]['image'] }}" alt="hero product mockup" style="width:100%;height:100%;object-fit:cover;object-position:center"/>
+                    @else
+                        <img src="https://images.unsplash.com/photo-1542444459-db3d6f1e6e9f?q=80&w=1200&auto=format&fit=crop" alt="hero product mockup" style="width:100%;height:100%;object-fit:cover;object-position:center"/>
+                    @endif
                 </div>
             </section>
         </main>
@@ -81,26 +85,18 @@
             <p style="text-align:center;color:#9CA3AF;margin-top:.25rem">Explore our curated collection of sustainable products.</p>
 
             <div class="grid columns-4" style="grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1rem">
-                <div class="card" style="text-align:center">
-                    <div style="font-size:1.75rem">👕</div>
-                    <div style="font-weight:600;margin-top:.5rem">Eco Fashion</div>
-                    <div class="muted" style="margin-top:.5rem;font-size:.85rem">Sustainable clothing & accessories</div>
-                </div>
-                <div class="card" style="text-align:center">
-                    <div style="font-size:1.75rem">🏠</div>
-                    <div style="font-weight:600;margin-top:.5rem">Home & Living</div>
-                    <div class="muted" style="margin-top:.5rem;font-size:.85rem">Zero‑waste home essentials</div>
-                </div>
-                <div class="card" style="text-align:center">
-                    <div style="font-size:1.75rem">🍃</div>
-                    <div style="font-weight:600;margin-top:.5rem">Handmade</div>
-                    <div class="muted" style="margin-top:.5rem;font-size:.85rem">Artisan products & gifts</div>
-                </div>
-                <div class="card" style="text-align:center">
-                    <div style="font-size:1.75rem">⚡</div>
-                    <div style="font-weight:600;margin-top:.5rem">Zero Waste</div>
-                    <div class="muted" style="margin-top:.5rem;font-size:.85rem">Refillable & reusable items</div>
-                </div>
+                @forelse($categories as $cat)
+                    <div class="card" style="text-align:center">
+                        <div style="font-size:1.75rem">📦</div>
+                        <div style="font-weight:600;margin-top:.5rem">{{ ucwords(str_replace('-', ' ', $cat)) }}</div>
+                        <div class="muted" style="margin-top:.5rem;font-size:.85rem">Products from {{ ucwords(str_replace('-', ' ', $cat)) }}</div>
+                    </div>
+                @empty
+                    <div class="card" style="text-align:center;">
+                        <div style="font-weight:600">General</div>
+                        <div class="muted" style="margin-top:.5rem;font-size:.85rem">Browse our featured items</div>
+                    </div>
+                @endforelse
             </div>
         </section>
 
@@ -110,23 +106,21 @@
             <p style="text-align:center;color:#9CA3AF;margin-top:.25rem">Our most popular eco-friendly items</p>
 
             <div class="grid columns-3" style="grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=800&auto=format&fit=crop" alt="reusable bottle" style="width:100%;height:160px;object-fit:cover;border-radius:6px" />
-                    <h4 style="margin-top:.75rem;font-weight:600">Reusable Water Bottle</h4>
-                    <div class="muted" style="margin-top:.25rem">$24.99</div>
-                </div>
-
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1602810316122-1b6cbee5f3fb?q=80&w=800&auto=format&fit=crop" alt="cotton tote" style="width:100%;height:160px;object-fit:cover;border-radius:6px" />
-                    <h4 style="margin-top:.75rem;font-weight:600">Organic Cotton Tote</h4>
-                    <div class="muted" style="margin-top:.25rem">$15.99</div>
-                </div>
-
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1585238342029-1c3d1f8e6b2a?q=80&w=800&auto=format&fit=crop" alt="bamboo toothbrush" style="width:100%;height:160px;object-fit:cover;border-radius:6px" />
-                    <h4 style="margin-top:.75rem;font-weight:600">Bamboo Toothbrush Set</h4>
-                    <div class="muted" style="margin-top:.25rem">$12.99</div>
-                </div>
+                @forelse($products as $p)
+                    <div class="card">
+                        <img src="{{ $p['image'] ?? 'https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $p['title'] ?? 'Product' }}" style="width:100%;height:160px;object-fit:cover;border-radius:6px" />
+                        <h4 style="margin-top:.75rem;font-weight:600">{{ \Illuminate\Support\Str::limit($p['title'] ?? 'Product', 60) }}</h4>
+                        <div class="muted" style="margin-top:.25rem">
+                            @if(isset($p['price'])) ${{ number_format($p['price'], 2) }} @else Contact for price @endif
+                        </div>
+                        <div style="margin-top:.5rem;display:flex;justify-content:space-between;align-items:center">
+                            <a href="#" style="background:#0F172A;color:#fff;padding:.45rem .65rem;border-radius:6px;text-decoration:none;font-size:.85rem">Add to Cart</a>
+                            <span style="font-size:.8rem;color:#9CA3AF">{{ $p['category'] ?? '' }}</span>
+                        </div>
+                    </div>
+                @empty
+                    <div class="card">No products available.</div>
+                @endforelse
             </div>
         </section>
 
@@ -153,18 +147,19 @@
         <section style="margin-top:2rem;">
             <h4 style="text-align:center;font-weight:600">What Our Customers Say</h4>
             <div class="grid columns-3" style="grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">
-                <div class="card">
-                    <div style="font-weight:600">Rina A.</div>
-                    <p class="muted" style="margin-top:.5rem">Produk berkualitas dan ramah lingkungan. Sangat puas!</p>
-                </div>
-                <div class="card">
-                    <div style="font-weight:600">Andi S.</div>
-                    <p class="muted" style="margin-top:.5rem">Pelayanan cepat dan pengemasan minimal plastik.</p>
-                </div>
-                <div class="card">
-                    <div style="font-weight:600">Maya C.</div>
-                    <p class="muted" style="margin-top:.5rem">Rekomendasi produk sangat membantu.</p>
-                </div>
+                @forelse($testimonials as $t)
+                    <div class="card">
+                        <div style="display:flex;gap:.75rem;align-items:flex-start">
+                            <img src="{{ $t['avatar'] }}" alt="{{ $t['name'] }}" style="width:44px;height:44px;border-radius:999px;object-fit:cover">
+                            <div>
+                                <div style="font-weight:600">{{ $t['name'] }}</div>
+                                <p class="muted" style="margin-top:.4rem">{{ $t['text'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="card">No testimonials yet.</div>
+                @endforelse
             </div>
         </section>
 
