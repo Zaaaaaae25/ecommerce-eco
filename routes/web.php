@@ -3,27 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\controllerprofile;
+use App\Http\Controllers\product;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// profile (tidak membutuhkan login) — memberikan user dummy bila belum login
-Route::get('/profile', function () {
-    $authUser = Auth::user();
+Route::get('/profile', [controllerprofile::class, 'index'])->name('profile');
 
-    $user = $authUser ?? (object)[
-        'name' => 'Guest User',
-        'email' => 'guest@example.com',
-        'avatar' => 'https://via.placeholder.com/150',
-        'reward_points' => 0,
-    ];
-
-    $statistics = (object)[
-        'total_waste' => 0,
-        'completed_transactions' => 0,
-        'total_contribution' => 0,
-    ];
-
-    $purchases = collect();
-
-    return view('profile', compact('user', 'statistics', 'purchases'));
-})->name('profile');
+Route::get('/product', [product::class, 'index'])->name('product');
