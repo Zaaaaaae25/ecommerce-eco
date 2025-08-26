@@ -1,5 +1,6 @@
 @extends('components.navbar')
 @extends('components.footer')
+@extends('components.cardproduct')
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <!DOCTYPE html>
@@ -9,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+
 </head>
 <body>
 
@@ -21,6 +23,7 @@
 
     {{-- Footer --}}
     <x-footer />
+    <x-cardproduct />
 
 
 

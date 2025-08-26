@@ -97,27 +97,18 @@
 
         <!-- Featured Products -->
         <section id="blog" style="background:#f9fafb;margin-top:2rem; margin-bottom:2rem;">
-            <h3 style="text-align:center;font-size:2rem;font-weight:600">Featured Products</h3>
-            <p style="text-align:center;color:#9CA3AF;margin-top:.25rem">Our most popular eco-friendly items</p>
+    <h3 style="text-align:center;font-size:2rem;font-weight:600">Featured Products</h3>
+    <p style="text-align:center;color:#9CA3AF;margin-top:.25rem">Our most popular eco-friendly items</p>
 
-            <div class="grid columns-3" style="grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">
-                @forelse($products as $p)
-                    <div class="card">
-                        <img src="{{ $p['image'] ?? 'https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=800&auto=format&fit=crop' }}" alt="{{ $p['title'] ?? 'Product' }}" style="width:100%;height:160px;object-fit:cover;border-radius:10px" />
-                        <h4 style="margin-top:.75rem;font-weight:600">{{ \Illuminate\Support\Str::limit($p['title'] ?? 'Product', 60) }}</h4>
-                        <div class="muted" style="margin-top:.25rem">
-                            @if(isset($p['price'])) ${{ number_format($p['price'], 2) }} @else Contact for price @endif
-                        </div>
-                        <div style="margin-top:.5rem;display:flex;justify-content:space-between;align-items:center">
-                            <a href="#" style="background:#0F172A;color:#fff;padding:.45rem .65rem;border-radius:6px;text-decoration:none;font-size:.85rem">Add to Cart</a>
-                            <span style="font-size:.8rem;color:#9CA3AF">{{ $p['category'] ?? '' }}</span>
-                        </div>
-                    </div>
-                @empty
-                    <div class="card">No products available.</div>
-                @endforelse
-            </div>
-        </section>
+    <div class="grid columns-3" style="grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">
+        @forelse($products as $p)
+            <x-product-card :product="$p" />
+        @empty
+            <div class="card">No products available.</div>
+        @endforelse
+    </div>
+</section>
+
 
         <!-- Assistant / Contact -->
 <section id="assistant" class="mt-8 bg-gray-50 rounded-lg p-6">
@@ -205,7 +196,8 @@
 
 
         {{-- Footer --}}
-        <x-footer />
+
     </div>
+    <x-footer />
 </body>
 </html>

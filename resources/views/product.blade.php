@@ -43,7 +43,7 @@
 
 <aside id="separator-sidebar"
   class="fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] transition-transform -translate-x-full sm:translate-x-0" style="margin-left: 3rem"
-  aria-label="Sidebar">
+  aria-label="Sidebar" class="sticky top-0">
   <div class="h-full px-4 py-6 overflow-y-auto bg-white border-r border-gray-200">
 
     <!-- Filter Section -->
