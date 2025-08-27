@@ -2,31 +2,30 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = [
-        'category_id','name','slug','description','price','stock','image','eco_score'
-    ];
+    use HasFactory;
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    // app/Models/Product.php
 
-    public function cartItems()
-    {
-        return $this->hasMany(CartItem::class);
-    }
+   // app/Models/Product.php
 
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
-
-    public function wishlist()
-    {
-        return $this->hasMany(Wishlist::class);
-    }
+protected $fillable = [
+    'name',
+    'description',
+    'price',
+    'stock',
+    'image',
+    'category_id',
+    'slug',
+    'eco_score', // <-- TAMBAHKAN INI
+];
 }

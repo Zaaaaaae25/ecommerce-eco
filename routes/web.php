@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\controllerprofile;
 use App\Http\Controllers\product;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -14,3 +15,5 @@ Route::get('/profile', [controllerprofile::class, 'index'])->name('profile');
 Route::get('/product', [product::class, 'index'])->name('product');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
+
+Route::resource('products', ProductController::class);
