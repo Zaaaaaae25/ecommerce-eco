@@ -1,100 +1,69 @@
-@push('styles')
-<style>
-    .card { border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-    .badge { padding: 8px 12px; border-radius: 30px; }
-</style>
-@endpush
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya</title>
+    {{-- Menggunakan Tailwind CSS via CDN --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
 
-@extends('layouts.app')
+    {{-- Anda bisa include komponen navbar Anda di sini jika ada --}}
+    {{-- <x-navbar /> --}}
 
-@section('content')
-<div class="container py-5">
-    <div class="row">
-        <!-- User Profile Card -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <img src="{{ $user->avatar ?? 'https://via.placeholder.com/150' }}" class="rounded-circle mb-3" width="150">
-                    <h4>{{ $user->name ?? 'Guest User' }}</h4>
-                    <p class="text-muted">{{ $user->email ?? 'guest@example.com' }}</p>
-                    <div class="border-top pt-3">
-                        <div class="row">
-                            <div class="col">
-                                <h6>Poin Reward</h6>
-                                <h4>{{ $user->reward_points ?? 0 }}</h4>
+    <div class="container mx-auto mt-10 px-4">
+        <div class="max-w-2xl mx-auto">
+            
+            <!-- Kartu Profil Utama -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Profil Saya</h3>
+                </div>
+                <div class="p-6">
+                    @if(Auth::check())
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 dark:text-gray-400">Nama</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">{{ Auth::user()->name }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 dark:text-gray-400">Email</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">{{ Auth::user()->email }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500 dark:text-gray-400">Bergabung pada</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">{{ Auth::user()->created_at->format('d F Y') }}</span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Statistics and History -->
-        <div class="col-md-8">
-            <!-- Waste Management Statistics -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Statistik Pengelolaan Sampah</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <h6>Total Sampah Dibeli</h6>
-                            <h4>{{ $statistics->total_waste ?? 0 }} kg</h4>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <h6>Transaksi Selesai</h6>
-                            <h4>{{ $statistics->completed_transactions ?? 0 }}</h4>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <h6>Total Kontribusi</h6>
-                            <h4>Rp {{ number_format($statistics->total_contribution ?? 0, 0, ',', '.') }}</h4>
-                        </div>
-                    </div>
+                        {{-- Tombol Logout --}}
+                        <form method="POST" action="{{ route('logout') }}" class="mt-6">
+                            @csrf
+                            <button type="submit" class="w-full text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                Logout
+                            </button>
+                        </form>
+                    @else
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Silakan <a href="{{ route('login') }}" class="text-blue-500 hover:underline">login</a> untuk melihat profil Anda.
+                        </p>
+                    @endif
                 </div>
             </div>
 
-            <!-- Purchase History -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Riwayat Pembelian</h5>
+            <!-- Kartu Riwayat Pesanan -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md mt-6">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h4 class="text-xl font-semibold text-gray-900 dark:text-white">Riwayat Pesanan</h4>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>ID Transaksi</th>
-                                    <th>Item</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($purchases as $purchase)
-                                <tr>
-                                    <td>{{ $purchase->created_at->format('d M Y') }}</td>
-                                    <td>{{ $purchase->transaction_id }}</td>
-                                    <td>{{ $purchase->items_count }} items</td>
-                                    <td>Rp {{ number_format($purchase->total, 0, ',', '.') }}</td>
-                                    <td>
-                                        <span class="badge bg-{{ $purchase->status_color }}">
-                                            {{ $purchase->status }}
-                                        </span>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">Belum ada riwayat pembelian</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="p-6">
+                    <p class="text-gray-500 dark:text-gray-400">Riwayat pesanan Anda akan muncul di sini.</p>
                 </div>
             </div>
+
         </div>
     </div>
-</div>
-@endsection
+
+</body>
+</html>

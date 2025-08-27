@@ -39,7 +39,7 @@
         <x-navbar />
 
         <!-- Hero -->
-        <main class="grid columns-2" style="background:#f9fafb;margin-top:3rem;gap:2rem; margin-bottom:3rem">
+        <main class="grid columns-2" style="background:#f9fafb;center;margin-top:3rem;gap:2rem; margin-bottom:3rem">
             <section id="home">
                 <h1 style="font-size:4rem;line-height:1.05;font-weight:600;">Shop Sustainable, <br>Live Better</h1>
                 <p class="muted" style="margin-top:.75rem;max-width:45ch;">
@@ -61,7 +61,7 @@
             <section>
                 <div style="border-radius:10px;overflow:hidden;border:1px solid #E5E7EB;background:#fff;height:320px;display:flex;align-items:center;justify-content:center;">
                     @if(!empty($products) && isset($products[0]['image']))
-                        <img src="{{ asset('storage/' . $products[0]['image']) }}" alt="hero product mockup" style="width:100%;height:100%;object-fit:cover;object-position:center"/>
+                        <img src="{{ $products[0]['image'] }}" alt="hero product mockup" style="width:100%;height:100%;object-fit:cover;object-position:center"/>
                     @else
                         <img src="https://images.unsplash.com/photo-1542444459-db3d6f1e6e9f?q=80&w=1200&auto=format&fit=crop" alt="hero product mockup" style="width:100%;height:100%;object-fit:cover;object-position:center"/>
                     @endif
@@ -70,19 +70,18 @@
         </main>
 
         <!-- Categories -->
+
         <section id="shop" style="background:#ffffff;margin-top:3rem;">
             <h3 style="text-align:center;color:#000000;font-size:2rem;font-weight:600">Shop by Category</h3>
             <p style="text-align:center;color:#9CA3AF;margin-top:.5rem">Explore our curated collection of sustainable products.</p>
 
             <div class="grid columns-4" style="grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;min-width:200px; margin-bottom: 2rem;">
-                @forelse($categories as $category)
-                    <a href="{{ route('categories.show', $category->slug) }}" style="text-decoration: none; color: inherit;">
-                        <div class="card" style="text-align:center">
-                            <div style="font-size:1.75rem; height: 10rem; background: #e5e7eb" ></div>
-                            <div style="font-weight:600;margin-top:.5rem">{{ $category->name }}</div>
-                            <div class="muted" style="margin-top:.5rem;font-size:.85rem">Products from <br>{{ $category->name }}</div>
-                        </div>
-                    </a>
+                @forelse($categories as $cat)
+                    <div class="card" style="text-align:center">
+                        <div style="font-size:1.75rem; height: 10rem; background: #e5e7eb" ></div>
+                        <div style="font-weight:600;margin-top:.5rem">{{ ucwords(str_replace('-', ' ', $cat)) }}</div>
+                        <div class="muted" style="margin-top:.5rem;font-size:.85rem">Products from <br>{{ ucwords(str_replace('-', ' ', $cat)) }}</div>
+                    </div>
                 @empty
                     <div class="card" style="text-align:center;">
                         <div style="font-weight:600">General</div>
@@ -94,23 +93,17 @@
 
         <!-- Featured Products -->
         <section id="blog" style="background:#f9fafb;margin-top:2rem; margin-bottom:2rem;">
-            <h3 style="text-align:center;font-size:2rem;font-weight:600">Featured Products</h3>
-            <p style="text-align:center;color:#9CA3AF;margin-top:.25rem">Our most popular eco-friendly items</p>
+    <h3 style="text-align:center;font-size:2rem;font-weight:600">Featured Products</h3>
+    <p style="text-align:center;color:#9CA3AF;margin-top:.25rem">Our most popular eco-friendly items</p>
 
-            <div class="grid columns-3" style="grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">
-                @forelse($products as $product)
-                    <a href="{{ route('products.show', $product->id) }}" style="text-decoration: none; color: inherit;">
-                        <div class="card">
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width:100%;height:200px;object-fit:cover;border-radius:8px;" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=No+Image';">
-                            <div style="font-weight:600; margin-top: 1rem;">{{ $product->name }}</div>
-                            <div class="muted" style="margin-top: 0.5rem;">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                        </div>
-                    </a>
-                @empty
-                    <div class="card">No products available.</div>
-                @endforelse
-            </div>
-        </section>
+    <div class="grid columns-3" style="grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem">
+        @forelse($products as $p)
+            <x-product-card :product="$p" />
+        @empty
+            <div class="card">No products available.</div>
+        @endforelse
+    </div>
+</section>
 
 
         <!-- Assistant / Contact -->
