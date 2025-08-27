@@ -1,32 +1,67 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http; // <-- wajib ditambahkan
+use App\Models\Cart;
+use App\Models\User;
+use App\Models\CartItem;
+use App\Models\Product;
 
 class CartController extends Controller
 {
+    protected function currentCart()
+{
+    $userId = Auth::id();
+
+    if (!$userId) {
+        // pakai / buat akun guest satu kali
+        $guest = User::firstOrCreate(
+            ['email' => 'guest@ecomart.local'],
+            ['name' => 'Guest', 'password' => bcrypt(str()->random(12))]
+        );
+        $userId = $guest->id;
+    }
+
+    return Cart::firstOrCreate(['user_id' => $userId]);
+}
+
     public function index()
     {
-        // External data sources (public sample APIs)
-        $productsResp   = Http::get('https://fakestoreapi.com/products?limit=6');
-        $categoriesResp = Http::get('https://fakestoreapi.com/products/categories');
-        $usersResp      = Http::get('https://jsonplaceholder.typicode.com/users?_limit=3');
+        $cart = $this->currentCart()->load('items.product.category');
+        $items = $cart->items;
 
-        $products = $productsResp->successful() ? $productsResp->json() : [];
-        $categories = $categoriesResp->successful() ? array_slice($categoriesResp->json(), 0, 4) : [];
-        $users = $usersResp->successful() ? $usersResp->json() : [];
+        $subtotal = $items->sum(fn($i) => ($i->product->price ?? 0) * $i->quantity);
+        $shipping = $subtotal > 0 ? 8990 : 0;
+        if (session('cart_free_shipping')) { $shipping = 0; }
+        $discount = session('cart_discount', 0);
+        $total = max(0, $subtotal + $shipping - $discount);
 
-        $testimonials = array_map(function ($u) {
-            return [
-                'name' => $u['name'],
-                'text' => 'Belanja mudah, produk sesuai deskripsi, dan kemasan ramah lingkungan. Akan kembali lagi.',
-                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($u['name']) . '&background=F0FFF4&color=276749',
-            ];
-        }, $users);
+        $recommend = Product::with('category')->inRandomOrder()->take(4)->get();
 
-        // Kirim data ke view
-        return view('cart', compact('products', 'categories', 'testimonials'));
+        return view('cart', compact('items','subtotal','shipping','discount','total','recommend'));
+    }
+
+    public function applyCode(Request $request)
+    {
+        $request->validate(['code' => 'nullable|string|max:32']);
+        $code = strtoupper(trim($request->code ?? ''));
+
+        session()->forget('cart_free_shipping');
+
+        $discount = 0;
+        if ($code === 'ECO10') {
+            $discount = 10000;
+        } elseif ($code === 'FREESHIP') {
+            session(['cart_free_shipping' => true]);
+        } else {
+            session()->forget(['cart_discount','cart_code','cart_free_shipping']);
+            return back()->with('success', 'Invalid code');
+        }
+
+        session(['cart_discount' => $discount, 'cart_code' => $code]);
+
+        return back()->with('success', 'Discount applied');
     }
 }

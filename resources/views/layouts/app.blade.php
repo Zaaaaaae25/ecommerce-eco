@@ -1,33 +1,20 @@
-@extends('components.navbar')
-@extends('components.footer')
-@extends('components.cardproduct')
-@vite(['resources/css/app.css', 'resources/js/app.js'])
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>@yield('title','EcoMart')</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-50">
 
-    {{-- Navbar --}}
-    <x-navbar />
+  <x-navbar />
 
-    <main class="container mx-auto mt-6">
-        @yield('content')
-    </main>
+  <main class="container mx-auto px-6 py-8">
+    @yield('content')
+  </main>
 
-    {{-- Footer --}}
-    <x-footer />
-    <x-cardproduct />
-
-
-
-
+  <x-footer />
 
 </body>
 </html>
