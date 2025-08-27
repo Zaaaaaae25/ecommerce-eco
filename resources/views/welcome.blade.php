@@ -17,8 +17,6 @@
 }
 </style>
 
-
-
         <style>
             /* Minimal fallback so layout still looks fine without Vite during quick preview */
             @import url('https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap');
