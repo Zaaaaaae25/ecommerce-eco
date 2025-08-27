@@ -17,6 +17,10 @@ class Product extends Model
     // app/Models/Product.php
 
    // app/Models/Product.php
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
 protected $fillable = [
     'name',

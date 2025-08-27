@@ -47,8 +47,9 @@ class ProductController extends Controller
 
         // 2. Handle upload gambar jika ada
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/products');
-            $validatedData['image'] = Storage::url($path);
+            // Kode baru yang benar
+            $path = $request->file('image')->store('products', 'public'); // Simpan ke disk 'public'
+            $validatedData['image'] = $path; // Simpan path relatifnya
         }
 
         // 3. Buat slug otomatis dari nama produk
@@ -98,9 +99,9 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::delete(str_replace('/storage', 'public', $product->image));
-            }
-            $path = $request->file('image')->store('public/products');
-            $validatedData['image'] = Storage::url($path);
+            }          // Kode baru yang benar
+            $path = $request->file('image')->store('products', 'public'); // Simpan ke disk 'public'
+            $validatedData['image'] = $path; // Simpan path relatifnya
         }
 
         $validatedData['slug'] = Str::slug($request->name, '-');
