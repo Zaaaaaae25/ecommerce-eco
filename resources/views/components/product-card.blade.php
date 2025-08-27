@@ -2,10 +2,12 @@
 @props(['product' => null])
 
 @php
-  $name  = $product?->name ?? ($product['title'] ?? 'Product');
-  $cat   = optional($product?->category)->name ?? ($product['category'] ?? 'Eco');
-  $price = $product?->price ?? ($product['price'] ?? 0);
-  $img   = $product?->image ?? ($product['image'] ?? 'https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=800&auto=format&fit=crop');
+    // Aman untuk object/array/null
+    $name  = data_get($product, 'name') ?? data_get($product, 'title', 'Product');
+    // Akan mencari category.name (objek relasi) lalu jatuh ke category (string) lalu 'Eco'
+    $cat   = data_get($product, 'category.name') ?? data_get($product, 'category', 'Eco');
+    $price = (float) data_get($product, 'price', 0);
+    $img   = data_get($product, 'image', 'https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=800&auto=format&fit=crop');
 @endphp
 
 <div class="bg-white border rounded-lg shadow relative overflow-hidden">
