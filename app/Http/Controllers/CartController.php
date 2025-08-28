@@ -64,4 +64,59 @@ class CartController extends Controller
 
         return back()->with('success', 'Discount applied');
     }
+    public function store(Request $request)
+{
+    $data = $request->validate([
+        'product_id' => ['required','integer','exists:products,id'],
+        'quantity'   => ['nullable','integer','min:1'],
+    ]);
+
+    $cart = $this->currentCart();
+    $qty  = $data['quantity'] ?? 1;
+
+    // Cek apakah item sudah ada di cart
+    $item = CartItem::where('cart_id', $cart->id)
+        ->where('product_id', $data['product_id'])
+        ->first();
+
+    if ($item) {
+        $item->increment('quantity', $qty);
+    } else {
+        CartItem::create([
+            'cart_id'    => $cart->id,
+            'product_id' => $data['product_id'],
+            'quantity'   => $qty,
+        ]);
+    }
+
+    return redirect()->route('cart.index')->with('success', 'Produk ditambahkan ke keranjang.');
+}
+
+public function update(Request $request, CartItem $item)
+{
+    $data = $request->validate([
+        'quantity' => ['required','integer','min:1'],
+    ]);
+
+    // optional: pastikan item milik cart user saat ini
+    if ($item->cart_id !== $this->currentCart()->id) {
+        abort(403);
+    }
+
+    $item->update(['quantity' => $data['quantity']]);
+
+    return back()->with('success', 'Jumlah item diperbarui.');
+}
+
+public function destroy(CartItem $item)
+{
+    if ($item->cart_id !== $this->currentCart()->id) {
+        abort(403);
+    }
+
+    $item->delete();
+
+    return back()->with('success', 'Item dihapus dari keranjang.');
+}
+
 }

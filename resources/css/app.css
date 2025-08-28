@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'flowbite';
+@import "flowbite";
 
-
-*,container{
+*,
+container {
     padding: 0;
     margin: 0;
 }
