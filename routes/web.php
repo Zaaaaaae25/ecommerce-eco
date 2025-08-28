@@ -7,9 +7,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishlistController;
 
+
 // Home & Profile
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/profile', [controllerprofile::class, 'index'])->name('profile');
 
 // Product
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
@@ -21,12 +21,25 @@ Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.upda
 Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.remove');
 Route::post('/cart/apply-code', [CartController::class, 'applyCode'])->name('cart.apply-code');
 
-// Wishlist (hapus duplikasi)
-Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
-Route::post('/wishlist/bulk-add-to-cart', [WishlistController::class, 'bulkAddToCart'])->name('wishlist.bulkAddToCart');
-Route::delete('/wishlist/bulk-remove', [WishlistController::class, 'bulkRemove'])->name('wishlist.bulkRemove');
-Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
 
 // Auth (view)
 Route::view('/login', 'auth.login')->name('login');
 Route::view('/register', 'auth.register')->name('register');
+
+
+// Wishlist
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
+// ✅ Tambahan bulk actions:
+Route::delete('/wishlist/bulk-remove', [WishlistController::class, 'bulkRemove'])
+    ->name('wishlist.bulk-remove');
+
+Route::post('/wishlist/bulk-add-to-cart', [WishlistController::class, 'bulkAddToCart'])
+    ->name('wishlist.bulkAddToCart'); // <— samakan dengan yg dipanggil di Blade
+
+    Route::get('/products/{product:slug}', [ProductController::class, 'show'])
+    ->name('products.show');
+
+Route::view('/about', 'about')->name('about');

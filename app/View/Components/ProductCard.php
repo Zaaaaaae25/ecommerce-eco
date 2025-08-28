@@ -23,4 +23,5 @@ class ProductCard extends Component
     {
         return view('components.product-card');
     }
+    
 }
