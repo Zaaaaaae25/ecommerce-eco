@@ -7,6 +7,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     <style>
@@ -34,9 +35,10 @@
 
 
 <body class="antialiased selection:bg-[#FF2D20] selection:text-white">
+    <x-navbar />    
     <div class="container">
         {{-- Navbar --}}
-        <x-navbar />
+
 
         <!-- Hero -->
         <main class="grid columns-2" style="background:#f9fafb;center;margin-top:3rem;gap:2rem; margin-bottom:3rem">

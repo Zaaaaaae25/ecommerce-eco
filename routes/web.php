@@ -7,16 +7,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\WishlistController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 // Auth routes (login, register, etc.)
@@ -25,18 +21,28 @@ Auth::routes();
 // Halaman Utama
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Dan menjadi seperti ini
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+// Grup route untuk profil yang memerlukan login
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
-// Halaman Produk (untuk menampilkan semua produk di halaman 'Shop')
+// Halaman Produk (Shop)
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 
 // Route untuk CRUD Produk (admin)
 Route::resource('products', ProductController::class);
 
+// Route untuk Kategori
 Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
 
 // Route untuk Keranjang Belanja (Cart)
-Route::get('/cart', [CartController::class, 'index'])->name('cart');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart', [CartController::class, 'add'])->name('cart.store');
 Route::post('/cart/apply-code', [CartController::class, 'applyCode'])->name('cart.apply-code');
+
+// Route untuk Wishlist
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist')->middleware('auth');
+Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store')->middleware('auth');
+Route::delete('/wishlist/{wishlist}', [WishlistController::class, 'destroy'])->name('wishlist.destroy')->middleware('auth');
