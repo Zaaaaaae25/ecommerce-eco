@@ -13,7 +13,12 @@ class HomeController extends Controller
     public function index()
     {
         $products = Product::latest()->take(6)->get();
-        $categories = Category::pluck('name');
+        
+        // GANTI BARIS INI
+        // Dari: $categories = Category::pluck('name');
+        // Menjadi:
+        $categories = Category::all(); // <-- INI PERBAIKANNYA
+
         $testimonials = Testimonial::latest()->take(3)->get();
 
         // Stats

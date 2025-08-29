@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\controllerprofile;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AiChatController;
@@ -12,14 +14,31 @@ use App\Http\Controllers\AiChatController;
 // Home & Profile
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Product
+// Auth routes (login, register, etc.)
+Auth::routes();
+
+// Halaman Utama
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Grup route untuk profil yang memerlukan login
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+// Halaman Produk (Shop)
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 
-// Cart
-Route::get('/cart',  [CartController::class, 'index'])->name('cart.index');   // <-- GET
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store');   // <-- POST needed by Blade
-Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.remove');
+// Route untuk CRUD Produk (admin)
+Route::resource('products', ProductController::class);
+
+// Route untuk Kategori
+Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Route untuk Keranjang Belanja (Cart)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart', [CartController::class, 'add'])->name('cart.store');
 Route::post('/cart/apply-code', [CartController::class, 'applyCode'])->name('cart.apply-code');
 
 

@@ -2,34 +2,70 @@
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'name','email','password','role','address','phone'
+        'name',
+        'email',
+        'password',
     ];
 
-    protected $hidden = ['password'];
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-    /** Baris pivot wishlist milik user */
-    public function wishlists(): HasMany
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return $this->hasMany(Wishlist::class, 'user_id');
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 
-    /** Relasi langsung ke Product (many-to-many via wishlists) */
-    public function wishlist(): BelongsToMany
+    /**
+     * Mendefinisikan relasi bahwa satu User memiliki banyak Wishlist.
+     */
+    public function wishlists()
     {
-        return $this->belongsToMany(Product::class, 'wishlists', 'user_id', 'product_id')
-                    ->withTimestamps();
+        return $this->hasMany(Wishlist::class);
     }
 
-    /** Helper dipakai di Blade */
-    public function hasInWishlist(int $productId): bool
+    /**
+     * Mendefinisikan relasi bahwa satu User memiliki banyak Order.
+     */
+    public function orders()
     {
-        return $this->wishlist()->where('product_id', $productId)->exists();
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Mendefinisikan relasi bahwa satu User memiliki banyak Testimonial.
+     */
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class);
     }
 }

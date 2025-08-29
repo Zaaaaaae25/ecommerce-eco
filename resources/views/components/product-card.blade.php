@@ -92,12 +92,3 @@
     </div>
   </div>
 </div>
-
-{{-- Handler kecil supaya klik wishlist tidak mengarahkan ke detail --}}
-<script>
-  function handleWishlistToggle(btn){
-    // Di sini kamu bisa AJAX fetch(btn.dataset.url, {method:'POST'}) dsb.
-    // Untuk demo:
-    alert('Wishlist toggled for product ID: ' + btn.dataset.productId);
-  }
-</script>
