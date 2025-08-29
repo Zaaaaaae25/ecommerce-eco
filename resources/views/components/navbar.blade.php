@@ -92,8 +92,8 @@
         <li><a href="{{ route('product.index') }}"
                class="{{ request()->is('product*') ? 'text-blue-700' : 'text-gray-900 hover:text-blue-700' }}
                       block py-2 px-3 rounded md:p-0">Shop</a></li>
-        <li><a href="#" class="text-gray-900 hover:text-blue-700 block py-2 px-3 rounded md:p-0">AI Assistant</a></li>
-        <li><a href="#about" class="text-gray-900 hover:text-blue-700 block py-2 px-3 rounded md:p-0">About</a></li>
+        <li><a href="{{ route('ai.bot') }}" class="text-gray-900 hover:text-blue-700 block py-2 px-3 rounded md:p-0">AI Assistant</a></li>
+        <li><a href="{{ route('about') }}" class="text-gray-900 hover:text-blue-700 block py-2 px-3 rounded md:p-0">About</a></li>
         <li><a href="#contact" class="text-gray-900 hover:text-blue-700 block py-2 px-3 rounded md:p-0">Contact</a></li>
       </ul>
     </div>

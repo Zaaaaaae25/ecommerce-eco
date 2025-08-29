@@ -6,7 +6,8 @@ use App\Http\Controllers\controllerprofile;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishlistController;
-
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AiChatController;
 
 // Home & Profile
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -43,3 +44,13 @@ Route::post('/wishlist/bulk-add-to-cart', [WishlistController::class, 'bulkAddTo
     ->name('products.show');
 
 Route::view('/about', 'about')->name('about');
+
+
+
+Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
+Route::get('/orders/{order}/waiting', [CheckoutController::class, 'waiting'])->name('orders.waiting');
+
+Route::view('/ai-bot', 'ai-bot')->name('ai.bot');
+Route::get('/chat',  [AiChatController::class, 'index'])->name('chat.index');
+Route::post('/chat', [AiChatController::class, 'send'])->name('chat.send');
