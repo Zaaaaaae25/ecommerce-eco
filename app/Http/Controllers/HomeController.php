@@ -13,7 +13,7 @@ class HomeController extends Controller
     public function index()
     {
         $products = Product::latest()->take(6)->get();
-        
+
         // GANTI BARIS INI
         // Dari: $categories = Category::pluck('name');
         // Menjadi:
